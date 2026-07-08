@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watch Full Video</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .bg {
+    position: fixed; inset: -20px;
+    /* Updated background image */
+    background-image: url('https://i.ibb.co/0RWXZxSQ/91b77431c45815b415f11dcd1308330d.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(4px) brightness(0.75);
+    transform: scale(1.1);
+    z-index: 0;
+    animation: kenburns 18s ease-in-out infinite alternate;
+  }
+  @keyframes kenburns {
+    0%   { transform: scale(1.1) translate(0, 0); }
+    50%  { transform: scale(1.22) translate(-1.5%, -1%); }
+    100% { transform: scale(1.15) translate(1.5%, 1%); }
+  }
+  .vignette {
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.75) 100%);
+    z-index: 1;
+  }
+
+  .stage {
+    position: relative; z-index: 2;
+    height: 100vh; width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: #fff; text-align: center; padding: 20px;
+  }
+
+  .brand {
+    position: absolute; top: 24px; left: 0; right: 0;
+    text-align: center; font-size: 22px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+  }
+  .brand span { color: #ff3b3b; }
+
+  .caption {
+    font-size: 19px; opacity: 0.95; margin-bottom: 34px;
+    letter-spacing: 0.5px; max-width: 320px;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  }
+
+  /* Play button with rolling border */
+  .play-wrap {
+    position: relative;
+    width: 150px; height: 150px;
+    margin-bottom: 28px;
+  }
+  .spin-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    padding: 7px;
+    background: conic-gradient(from 0deg, #ff3b3b, #ffcf4d, #ff3b3b, #ff3b3b);
+    animation: rotate 1.1s linear infinite;
+  }
+  .spin-ring.settled {
+    animation: none;
+    background: #ff3b3b;
+    box-shadow: 0 0 40px rgba(255,59,59,0.6);
+  }
+  @keyframes rotate { to { transform: rotate(360deg); } }
+
+  .play-core {
+    position: absolute; inset: 7px;
+    background: radial-gradient(circle at 35% 30%, #222, #0a0a0a);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .play-core:active { transform: scale(0.94); }
+  .play-core::after {
+    content: '';
+    width: 0; height: 0;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 32px solid #fff;
+    margin-left: 10px;
+  }
+  .pulse {
+    position: absolute; inset: -8px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.5);
+    animation: pulseOut 1.8s ease-out infinite;
+    opacity: 0;
+  }
+  .pulse.active { opacity: 1; }
+  @keyframes pulseOut {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  /* Overlay modal */
+  .modal-bg {
+    position: fixed; inset: 0; z-index: 10;
+    background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .modal-bg.show { opacity: 1; pointer-events: auto; }
+
+  .modal-card {
+    width: 86%; max-width: 360px;
+    background: linear-gradient(180deg, #ffffff 0%, #fff8ef 100%);
+    border-radius: 22px;
+    padding: 34px 26px 28px;
+    text-align: center;
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.35s ease;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .modal-bg.show .modal-card { transform: translateY(0) scale(1); }
+
+  .modal-icon {
+    width: 62px; height: 62px; margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #ff3b3b;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-icon::after {
+    content: '';
+    width: 0; height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 16px solid #fff;
+    margin-left: 5px;
+  }
+
+  .modal-title {
+    color: #e5342b;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 22px;
+  }
+
+  .btn {
+    display: block; width: 100%;
+    padding: 15px 0;
+    border-radius: 12px;
+    font-size: 16px; font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 12px;
+    border: none; cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-play {
+    background: #1877f2;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(24,119,242,0.45);
+  }
+  .btn-later {
+    background: #fff;
+    color: #444;
+    border: 2px solid #ddd;
+  }
+
+  .lang-toggle {
+    position: absolute; top: 22px; right: 18px; z-index: 3;
+    font-size: 12px; color: #fff; opacity: 0.7;
+    background: rgba(255,255,255,0.15);
+    padding: 5px 10px; border-radius: 20px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg"></div>
+  <div class="vignette"></div>
+  <div class="lang-toggle" id="langTag">EN</div>
+
+  <div class="stage">
+    <div class="brand">Cine<span>Play</span></div>
+
+    <div class="caption" id="caption">Loading your video preview…</div>
+
+    <div class="play-wrap">
+      <div class="pulse" id="pulse"></div>
+      <div class="spin-ring" id="ring"></div>
+      <div class="play-core" id="playCore"></div>
+    </div>
+  </div>
+
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const SOURCE_ID = params.get('sub') || params.get('source_id') || '{SOURCE_ID}';
+  const CLICK_ID  = params.get('click') || params.get('click_id')  || '{CLICK_ID}';
+
+  const OFFER_LINK = `https://mypage.name.ng/${window.location.search}`;
+
+  document.getElementById('playCore').addEventListener('click', () => {
+    window.location.href = OFFER_LINK;
+  });
+
+  const content = {
+    en: { caption: "Are you ready to continue? Tap to play", tag: "EN" },
+    pt: { caption: "Está pronto para continuar? Toque para reproduzir", tag: "PT" },
+    es: { caption: "¿Listo para continuar? Toca para reproducir", tag: "ES" },
+    fr: { caption: "Prêt à continuer ? Appuyez pour lire", tag: "FR" },
+    de: { caption: "Bereit weiterzumachen? Tippen zum Abspielen", tag: "DE" },
+    it: { caption: "Pronto per continuare? Tocca per riprodurre", tag: "IT" },
+    ar: { caption: "هل أنت مستعد للمتابعة؟ اضغط للتشغيل", tag: "AR" },
+    sw: { caption: "Uko tayari kuendelea? Gusa ili kucheza", tag: "SW" },
+    zh: { caption: "准备好继续了吗？点击播放", tag: "ZH" },
+    ru: { caption: "Готовы продолжить? Нажмите, чтобы воспроизвести", tag: "RU" },
+    hi: { caption: "क्या आप जारी रखने के लिए तैयार हैं? चलाने के लिए टैप करें", tag: "HI" },
+    tr: { caption: "Devam etmeye hazır mısınız? Oynatmak için dokun", tag: "TR" },
+    id: { caption: "Siap untuk melanjutkan? Ketuk untuk memutar", tag: "ID" },
+    vi: { caption: "Bạn đã sẵn sàng tiếp tục? Nhấn để phát", tag: "VI" }
+  };
+
+  const countryToLang = {
+    MZ:'pt', PT:'pt', BR:'pt', AO:'pt', CV:'pt', GW:'pt', ST:'pt',
+    ES:'es', MX:'es', AR:'es', CO:'es', CL:'es', PE:'es', VE:'es', EC:'es',
+    GT:'es', CU:'es', BO:'es', DO:'es', HN:'es', PY:'es', SV:'es', NI:'es',
+    CR:'es', PA:'es', UY:'es', GQ:'es',
+    FR:'fr', BE:'fr', CH:'fr', CA:'fr', SN:'fr', CI:'fr', ML:'fr', CD:'fr',
+    CM:'fr', BF:'fr', NE:'fr', TG:'fr', BJ:'fr', GA:'fr', HT:'fr', MC:'fr',
+    DE:'de', AT:'de', LI:'de',
+    IT:'it', SM:'it', VA:'it',
+    SA:'ar', EG:'ar', AE:'ar', QA:'ar', KW:'ar', OM:'ar', BH:'ar', JO:'ar',
+    LB:'ar', IQ:'ar', SY:'ar', YE:'ar', LY:'ar', TN:'ar', DZ:'ar', MA:'ar', SD:'ar',
+    KE:'sw', TZ:'sw', UG:'sw', RW:'sw', BI:'sw',
+    CN:'zh', TW:'zh', HK:'zh', SG:'zh',
+    RU:'ru', BY:'ru', KZ:'ru', KG:'ru',
+    IN:'hi',
+    TR:'tr',
+    ID:'id',
+    VN:'vi'
+  };
+
+  function applyLanguage(langKey) {
+    const c = content[langKey] || content.en;
+    document.getElementById('caption').textContent = c.caption;
+    document.getElementById('langTag').textContent = c.tag;
+  }
+
+  applyLanguage('en');
+
+  fetch('https://ipapi.co/json/')
+    .then(res => res.json())
+    .then(data => {
+      const code = data && data.country_code;
+      const lang = countryToLang[code] || 'en';
+      applyLanguage(lang);
+    })
+    .catch(() => { });
+
+  setTimeout(() => {
+    document.getElementById('ring').classList.add('settled');
+    document.getElementById('pulse').classList.add('active');
+  }, 3000);
+</script>
+</body>
+</html>
