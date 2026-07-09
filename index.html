@@ -1,135 +1,66 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meet someone tonight</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
-
-  :root {
-    --plum-deep: #2b1830;
-    --plum-mid: #3d2145;
-    --coral: #ff6f61;
-    --gold: #f2b263;
-    --cream: #fbf3ec;
-    --muted: rgba(251,243,236,0.72);
-  }
-
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0; padding: 0;
-    font-family: 'Inter', sans-serif;
-    color: var(--cream);
-    height: 100%;
-  }
-
-  .backdrop {
-    position: relative;
-    min-height: 100vh;
-    overflow: hidden;
-    /* Fundo com a imagem solicitada e desfoque */
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://i.ibb.co/0RWXZxSQ/91b77431c45815b415f11dcd1308330d.jpg');
-    background-size: cover;
-    background-position: center;
-    filter: blur(3px); /* Efeito de desfoque aplicado aqui */
-    transform: scale(1.05); /* Para evitar bordas brancas pelo blur */
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: -1;
-  }
-
-  .content-wrapper {
-    position: relative;
-    z-index: 2;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 20px;
-  }
-
-  .card {
-    position: relative;
-    max-width: 420px;
-    width: 100%;
-    text-align: center;
-    background: rgba(0,0,0,0.6);
-    padding: 40px;
-    border-radius: 20px;
-  }
-
-  .eyebrow {
-    font-size: 13px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 600;
-    margin-bottom: 18px;
-  }
-
-  h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 42px;
-    line-height: 1.08;
-    margin: 0 0 18px;
-    letter-spacing: -0.01em;
-  }
-  h1 em {
-    font-style: italic;
-    font-weight: 500;
-    color: var(--coral);
-  }
-
-  p.lede {
-    font-size: 16px;
-    line-height: 1.55;
-    color: var(--muted);
-    margin: 0 0 34px;
-  }
-
-  .cta {
-    display: inline-block;
-    width: 100%;
-    padding: 17px 0;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--coral), #ff8a75);
-    color: #fff;
-    font-weight: 700;
-    font-size: 16px;
-    text-decoration: none;
-    box-shadow: 0 12px 30px rgba(255,111,97,0.35);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .cta:hover { transform: translateY(-1px); box-shadow: 0 16px 36px rgba(255,111,97,0.45); }
-  .cta:active { transform: scale(0.98); }
-
-  .fineprint {
-    margin-top: 18px;
-    font-size: 12.5px;
-    color: rgba(251,243,236,0.5);
-    line-height: 1.5;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Access</title>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        body { margin: 0; background-color: #000; font-family: sans-serif; }
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+        .image-wrapper { position: relative; }
+        .image-wrapper img { width: 100%; display: block; filter: brightness(70%); }
+        .play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .play-icon::after { content: ''; border-left: 15px solid white; border-top: 10px solid transparent; border-bottom: 10px solid transparent; margin-left: 4px; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10; backdrop-filter: blur(5px); }
+        .modal { background: #fff; padding: 40px; border-radius: 25px; text-align: center; width: 85%; max-width: 450px; }
+        h2 { font-size: 28px; margin-bottom: 20px; font-weight: 800; }
+        p { font-size: 18px; margin-bottom: 40px; line-height: 1.5; color: #333; }
+        .cta-button { display: block; background: #007bff; color: white; padding: 24px 0; text-decoration: none; border-radius: 15px; font-size: 26px; font-weight: 900; text-transform: uppercase; box-shadow: 0 6px 12px rgba(0,123,255,0.3); transition: transform 0.2s; }
+        .cta-button:active { transform: scale(0.98); }
+    </style>
 </head>
 <body>
 
-  <div class="backdrop"></div>
-  
-  <div class="content-wrapper">
-    <div class="card">
-      <div class="eyebrow">Real people, nearby</div>
-      <h1>Someone in your city is <em>waiting</em> to meet you</h1>
-      <p class="lede">Free to browse, no bots, no gimmicks. Create a profile in under a minute and start chatting today.</p>
+    <div id="google_translate_element" style="display:none;"></div>
 
-      <a class="cta" href="https://f4t7a.bemobtrcks.com/click" id="ctaBtn">Click to continue</a>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: true,
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+            
+            // This force-triggers the translation based on the user's browser language
+            var a = document.querySelector("#google_translate_element select");
+            if(a) {
+                a.selectedIndex = 1;
+                a.dispatchEvent(new Event('change'));
+            }
+        }
+    </script>
 
-      <div class="fineprint">
-        By continuing you'll be taken directly to the sign-up page for this offer. 18+.
-      </div>
+    <div class="grid-container">
+        <div class="image-wrapper"><img src="https://i.ibb.co/7tZqqQp1/79671e8f067fcc99e0a38b21795ca948.jpg"><div class="play-icon"></div></div>
+        <div class="image-wrapper"><img src="https://i.ibb.co/JRKVzWPj/0924b8449ac2ebfab50d244f923d3f08.jpg"><div class="play-icon"></div></div>
+        <div class="image-wrapper"><img src="https://i.ibb.co/zHrGcmCv/12754faef787e519796d852ad54f249a.jpg"><div class="play-icon"></div></div>
+        <div class="image-wrapper"><img src="https://i.ibb.co/ZR5WpQ7N/d817e4c16095c119dd3774aa1efe9c9f.jpg"><div class="play-icon"></div></div>
+        <div class="image-wrapper"><img src="https://i.ibb.co/CpVRvz6c/d40b71c48ed5f275de441c755c88bb7d.jpg"><div class="play-icon"></div></div>
+        <div class="image-wrapper"><img src="https://i.ibb.co/x0xdtjT/64693749cf3d4952adccd3c0e99cbceb.jpg"><div class="play-icon"></div></div>
+        <div class="image-wrapper"><img src="https://i.ibb.co/YFNXc0Xd/c3f809c8be5fc2ad658d67262949b9a2.jpg"><div class="play-icon"></div></div>
+        <div class="image-wrapper"><img src="https://i.ibb.co/3mXGRJQ4/455f7bb33a900ca1851d46c66549f15d.jpg"><div class="play-icon"></div></div>
+        <div class="image-wrapper"><img src="https://i.ibb.co/KxWt6dFD/8e8b3f5a4878c0496480655ead670675.jpg"><div class="play-icon"></div></div>
+        <div class="image-wrapper"><img src="https://i.ibb.co/yc24jyMX/19ff97366d6d05811def04ef5e65c558.jpg"><div class="play-icon"></div></div>
     </div>
-  </div>
 
+    <div class="overlay">
+        <div class="modal">
+            <h2>KEEP IN MIND!</h2>
+            <p>Now you might see spicy videos of women. Click the Continue button and be discreet!</p>
+            <a href="https://f4t7a.bemobtrcks.com/click" class="cta-button">Continue</a>
+        </div>
+    </div>
 </body>
 </html>
