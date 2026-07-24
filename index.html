@@ -1,71 +1,162 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Access</title>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <title>Welcome - Age Verification</title>
     <style>
-        body { margin: 0; background-color: #000; font-family: sans-serif; }
-        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
-        .image-wrapper { position: relative; }
-        .image-wrapper img { width: 100%; display: block; filter: brightness(70%); }
-        .play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .play-icon::after { content: ''; border-left: 15px solid white; border-top: 10px solid transparent; border-bottom: 10px solid transparent; margin-left: 4px; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10; backdrop-filter: blur(5px); }
-        .modal { background: #fff; padding: 40px; border-radius: 25px; text-align: center; width: 85%; max-width: 450px; }
-        h2 { font-size: 28px; margin-bottom: 20px; font-weight: 800; }
-        p { font-size: 18px; margin-bottom: 40px; line-height: 1.5; color: #333; }
-        .cta-button { display: block; background: #007bff; color: white; padding: 24px 0; text-decoration: none; border-radius: 15px; font-size: 26px; font-weight: 900; text-transform: uppercase; box-shadow: 0 6px 12px rgba(0,123,255,0.3); transition: transform 0.2s; }
-        .cta-button:active { transform: scale(0.98); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            /* Direct fallback background image and color in case CSS fails to load */
+            background: #000 url('https://i.ibb.co/jd4z3QG/029bb41a0c4bbc1ac3c5a4e09b01cb1a.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Fullscreen absolute background element using the direct image link */
+        .bg-img {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.5); /* Dims the image slightly so text is super clear */
+        }
+
+        /* Overlay Container */
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 50px 30px;
+            max-width: 600px;
+            width: 90%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Large Text */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            color: #ffffff;
+        }
+
+        p {
+            font-size: 1.5rem;
+            color: #e0e0e0;
+            margin-bottom: 40px;
+            line-height: 1.4;
+            font-weight: 300;
+        }
+
+        /* Buttons */
+        .button-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 20px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-yes {
+            background-color: #ff2d55;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 45, 85, 0.4);
+        }
+
+        .btn-yes:hover {
+            background-color: #ff1a45;
+            transform: translateY(-2px);
+        }
+
+        .btn-no {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .bg-no:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            p { font-size: 1.2rem; }
+            .container { padding: 40px 20px; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="google_translate_element" style="display:none;"></div>
+    <!-- Direct Image Tag acting as the Background Layer -->
+    <img src="https://i.ibb.co/jd4z3QG/029bb41a0c4bbc1ac3c5a4e09b01cb1a.jpg" class="bg-img" alt="Background Image">
 
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                autoDisplay: true,
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-            }, 'google_translate_element');
-            
-            // This force-triggers the translation based on the user's browser language
-            var a = document.querySelector("#google_translate_element select");
-            if(a) {
-                a.selectedIndex = 1;
-                a.dispatchEvent(new Event('change'));
-            }
-        }
-    </script>
-
-    <div class="grid-container">
-        <div class="image-wrapper"><img src="https://i.ibb.co/7tZqqQp1/79671e8f067fcc99e0a38b21795ca948.jpg"><div class="play-icon"></div></div>
-        <div class="image-wrapper"><img src="https://i.ibb.co/JRKVzWPj/0924b8449ac2ebfab50d244f923d3f08.jpg"><div class="play-icon"></div></div>
-        <div class="image-wrapper"><img src="https://i.ibb.co/zHrGcmCv/12754faef787e519796d852ad54f249a.jpg"><div class="play-icon"></div></div>
-        <div class="image-wrapper"><img src="https://i.ibb.co/ZR5WpQ7N/d817e4c16095c119dd3774aa1efe9c9f.jpg"><div class="play-icon"></div></div>
-        <div class="image-wrapper"><img src="https://i.ibb.co/CpVRvz6c/d40b71c48ed5f275de441c755c88bb7d.jpg"><div class="play-icon"></div></div>
-        <div class="image-wrapper"><img src="https://i.ibb.co/x0xdtjT/64693749cf3d4952adccd3c0e99cbceb.jpg"><div class="play-icon"></div></div>
-        <div class="image-wrapper"><img src="https://i.ibb.co/YFNXc0Xd/c3f809c8be5fc2ad658d67262949b9a2.jpg"><div class="play-icon"></div></div>
-        <div class="image-wrapper"><img src="https://i.ibb.co/3mXGRJQ4/455f7bb33a900ca1851d46c66549f15d.jpg"><div class="play-icon"></div></div>
-        <div class="image-wrapper"><img src="https://i.ibb.co/KxWt6dFD/8e8b3f5a4878c0496480655ead670675.jpg"><div class="play-icon"></div></div>
-        <div class="image-wrapper"><img src="https://i.ibb.co/yc24jyMX/19ff97366d6d05811def04ef5e65c558.jpg"><div class="play-icon"></div></div>
-    </div>
-
-    <div class="overlay">
-        <div class="modal">
-            <h2>KEEP IN MIND!</h2>
-            <p>Now you might see spicy videos of women. Click the Continue button and be discreet!</p>
-            <a href="https://p4vhx.bemobtrcks.com/click" class="cta-button">Continue</a>
+    <div class="container">
+        <h1>Welcome</h1>
+        <p>You are about to see new girl videos and pictures in your area. Confirm that you are 18 years and above.</p>
+        
+        <div class="button-wrapper">
+            <a href="https://0wdb.com/link?z=9970952&var={SOURCE_ID}&ymid={CLICK_ID}" class="btn btn-yes">Yes I am 18 +</a>
+            <a href="https://0wdb.com/link?z=9970952&var={SOURCE_ID}&ymid={CLICK_ID}" class="btn btn-no">No, I am not</a>
         </div>
     </div>
+
 </body>
-    <script>
-setTimeout(function() {
-  window.location.href = "https://p4vhx.bemobtrcks.com/click";
-}, 2500);
-    </script>
+    <!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1065253976163918');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1065253976163918&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </html>
